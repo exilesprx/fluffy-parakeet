@@ -5,5 +5,9 @@
             "Root\\Project\\": "src/"
         }
     },
-    "require": {}
+    "require": {
+        "illuminate/collections": "^10.9",
+        "fakerphp/faker": "^1.21",
+        "nesbot/carbon": "^2.66"
+    }
 }
