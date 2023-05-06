@@ -1,7 +1,7 @@
 FROM php:8.1.18-cli-bullseye
 
 RUN apt -y update \
-    && apt -y install wget
+    && apt -y install wget git
 
 RUN wget https://getcomposer.org/installer \
     && chmod +x installer
