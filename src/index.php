@@ -1,25 +1,14 @@
 <?php
 
-include_once 'vendor/autoload.php';
+include_once __DIR__ . '/vendor/autoload.php';
 
 use Faker\Factory;
-
-$items = [100, 1000, 100000];
-$bag = fillBag($items);
-
-foreach($bag as $item) {
-    $collection = \Illuminate\Support\LazyCollection::make($item);
-    runOn($collection);
-
-    $collection = \Illuminate\Support\Collection::make($bag);
-    runOn($collection);
-}
 
 function fillBag(array $items): array
 {
     $bag = [];
-    foreach ($items as $item) {
-        $bag[] = createItems($item);
+    foreach ($items as $count) {
+        $bag[] = createItems($count);
     }
     return $bag;
 }
@@ -29,19 +18,18 @@ function createItems(int $count): array
     $faker = Factory::create();
     $temp = [];
     for ($i = 0; $i < $count; $i++) {
-        $temp [] = $faker->realText(20);
+        $temp[] = $faker->realText(20);
     }
 
     return $temp;
 }
 
-function runOn(\Illuminate\Support\Enumerable $enumerable): void
+function runOn(\Illuminate\Support\Enumerable $enumerable): int
 {
     $start = \Carbon\Carbon::now();
     performOperationsOn($enumerable);
     $end = \Carbon\Carbon::now();
-    echo sprintf("Stats for %d items \n", $enumerable->count());
-    echo sprintf("Time elapsed for normal collection %d \n", $start->diffInMicroseconds($end));
+    return $start->diffInMicroseconds($end);
 }
 
 function performOperationsOn(\Illuminate\Support\Enumerable $collection): void
