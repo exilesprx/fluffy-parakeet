@@ -3,19 +3,49 @@
 include_once 'vendor/autoload.php';
 
 use Faker\Factory;
-$faker = Factory::create();
 
 $items = [100, 1000, 100000];
-foreach ($items as $item) {
+$bag = fillBag($items);
+
+foreach($bag as $item) {
+    $collection = \Illuminate\Support\LazyCollection::make($item);
+    runOn($collection);
+
+    $collection = \Illuminate\Support\Collection::make($bag);
+    runOn($collection);
+}
+
+function fillBag(array $items): array
+{
+    $bag = [];
+    foreach ($items as $item) {
+        $bag[] = createItems($item);
+    }
+    return $bag;
+}
+
+function createItems(int $count): array
+{
+    $faker = Factory::create();
     $temp = [];
-    for ($i = 0; $i < $item; $i++) {
+    for ($i = 0; $i < $count; $i++) {
         $temp [] = $faker->realText(20);
     }
 
-//    $collection = \Illuminate\Support\LazyCollection::make($temp);
-    $collection = \Illuminate\Support\Collection::make($temp);
+    return $temp;
+}
 
-    $start = Carbon\Carbon::now();
+function runOn(\Illuminate\Support\Enumerable $enumerable): void
+{
+    $start = \Carbon\Carbon::now();
+    performOperationsOn($enumerable);
+    $end = \Carbon\Carbon::now();
+    echo sprintf("Stats for %d items \n", $enumerable->count());
+    echo sprintf("Time elapsed for normal collection %d \n", $start->diffInMicroseconds($end));
+}
+
+function performOperationsOn(\Illuminate\Support\Enumerable $collection): void
+{
     $collection->each(function($item) {
         return strtoupper($item);
     })
@@ -23,8 +53,4 @@ foreach ($items as $item) {
             return str_contains('a', $item);
         })
         ->values();
-    $end = \Carbon\Carbon::now();
-
-    echo sprintf("Stats for %d items \n", $item);
-    echo sprintf("Time elapsed for normal collection %d \n", $start->diffInMicroseconds($end));
 }
