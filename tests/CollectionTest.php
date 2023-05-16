@@ -6,7 +6,6 @@ use PHPUnit\Framework\TestCase;
 
 class CollectionTest extends TestCase
 {
-
     /** @test */
     public function it_expects_lazy_collection_to_run_faster()
     {
