@@ -3,13 +3,9 @@ FROM php:8.2.5-cli-bullseye
 RUN apt -y update \
     && apt -y install wget git unzip
 
-RUN pecl install xdebug
+COPY --from=mlocati/php-extension-installer:2.1.27 /usr/bin/install-php-extensions /usr/local/bin/
 
-RUN wget https://getcomposer.org/installer \
-    && chmod +x installer
-
-RUN php ./installer \
-    && mv composer.phar /usr/local/bin/composer
+RUN install-php-extensions xdebug @composer
 
 COPY xdebug.ini /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
 
